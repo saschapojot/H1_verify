@@ -19,9 +19,9 @@
 #include <fstream>
 
 namespace fs = boost::filesystem;
-using namespace std::complex_literals;
+//using namespace std::complex_literals;
 const auto PI=M_PI;
-
+const auto I=std::complex<double>(0,1);
 //This subroutine computes evolution using operator splitting and particle number
 // and verifies the solution using H1
 class os_DCE_Evolution {
@@ -230,7 +230,7 @@ public:
 
     double dx2=0;
 
-    double dtEst=0.000005;
+    double dtEst=0.0000025;
     double tFlushStart=0;
     double tFlushStop=0.001;
     double tTotPerFlush=tFlushStop-tFlushStart;

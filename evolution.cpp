@@ -231,13 +231,13 @@ arma::cx_dmat os_DCE_Evolution::evolution1Step(const int&j, const arma::cx_dmat&
     //operator U15, for each column n2
     for (int n2=0;n2<N2;n2++){
         double x2n2=x2ValsAll[n2];
-        psiCurr.col(n2)*=std::exp(1i*dt*0.5*g0*std::sqrt(2.0*omegam)*std::cos(omegap*tj)*x2n2);
+        psiCurr.col(n2)*=std::exp(I*dt*0.5*g0*std::sqrt(2.0*omegam)*std::cos(omegap*tj)*x2n2);
     }
 
     //operator U14
     //construct U14
     //construct the exponent part
-    arma::cx_dmat U14=-1i*dt*g0*omegac*std::sqrt(2.0*omegam)*std::cos(omegap*tj)*this->U14Exp;
+    arma::cx_dmat U14=-I*dt*g0*omegac*std::sqrt(2.0*omegam)*std::cos(omegap*tj)*this->U14Exp;
 
 
     U14=arma::exp(U14);
@@ -486,7 +486,7 @@ arma::cx_dmat  os_DCE_Evolution::psit(const int &j){
         double x1SquaredTmp=x1ValsAllSquared[n1];
         for(int n2=0;n2<N2;n2++){
             double x2Tmp=x2ValsAll[n2];
-            psiTmp(n1,n2)=std::exp(1i/omegap*(0.5*g0*std::sqrt(2.0*omegam)*x2Tmp
+            psiTmp(n1,n2)=std::exp(I/omegap*(0.5*g0*std::sqrt(2.0*omegam)*x2Tmp
                     -g0*omegac*std::sqrt(2.0*omegam)*x1SquaredTmp*x2Tmp)*std::sin(omegap*tj));
         }
     }
