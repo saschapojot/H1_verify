@@ -230,12 +230,12 @@ public:
 
     double dx2=0;
 
-    double dtEst=0.0000025;
+    double dtEst=0.00001;
     double tFlushStart=0;
     double tFlushStop=0.001;
     double tTotPerFlush=tFlushStop-tFlushStart;
 
-    int flushNum=3000;
+    int flushNum=30;
 
     int stepsPerFlush=static_cast<int>(std::ceil(tTotPerFlush/dtEst));
     double dt=tTotPerFlush/static_cast<double >(stepsPerFlush);

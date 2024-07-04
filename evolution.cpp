@@ -62,23 +62,24 @@ void os_DCE_Evolution::parseCSV(const int &group, const int &row){
     if (std::regex_search(result,match_thetaCoef,pattern_thetaCoef)){
         this->thetaCoef=std::stod(match_thetaCoef[1].str());
     }
-//    std::cout<<"jH1="<<jH1<<std::endl;
-//
-//    std::cout<<"jH2="<<jH2<<std::endl;
-//
-//    std::cout<<"g0="<<g0<<std::endl;
-//
-//    std::cout<<"omegam="<<omegam<<std::endl;
-//
-//    std::cout<<"omegac="<<omegac<<std::endl;
-//
-//    std::cout<<"omegap="<<omegap<<std::endl;
-//
-//    std::cout<<"er="<<er<<std::endl;
-//
-//    std::cout<<"thetaCoef="<<thetaCoef<<std::endl;
+    std::cout<<"jH1="<<jH1<<std::endl;
+
+    std::cout<<"jH2="<<jH2<<std::endl;
+
+    std::cout<<"g0="<<g0<<std::endl;
+
+    std::cout<<"omegam="<<omegam<<std::endl;
+
+    std::cout<<"omegac="<<omegac<<std::endl;
+
+    std::cout<<"omegap="<<omegap<<std::endl;
+
+    std::cout<<"er="<<er<<std::endl;
+
+    std::cout<<"thetaCoef="<<thetaCoef<<std::endl;
     e2r=std::pow(er,2);
     r=std::log(er);
+    std::cout<<"r="<<r<<std::endl;
     double eM2r=1/e2r;
     this->Deltam=this->omegam-this->omegap;
     this->lmd=(e2r-eM2r)/(e2r+eM2r)*Deltam;
@@ -103,8 +104,11 @@ void os_DCE_Evolution::parseCSV(const int &group, const int &row){
 //for inParamsNew7, N1=9000
 
     std::cout<<"N1="<<N1<<std::endl;
+    std::cout<<"N2="<<N2<<std::endl;
     dx1=2*L1/(static_cast<double>(N1));
     dx2=2*L2/(static_cast<double >(N2));
+    std::cout<<"dx1="<<dx1<<std::endl;
+    std::cout<<"dx2="<<dx2<<std::endl;
 //    std::cout<<"dt="<<dt<<std::endl;
 }
 
@@ -181,7 +185,7 @@ void os_DCE_Evolution::initPsiSerial(){
 //        vec2(n2)= f2(n2);
 //    }
     this->psi0=arma::ones<arma::cx_dmat>(N1,N2);
-//    this->psi0/=arma::norm(psi0,2);
+    this->psi0/=arma::norm(psi0,2);
 //    std::cout<<"finish init"<<std::endl;
 
 
@@ -192,7 +196,7 @@ void os_DCE_Evolution::initPsiSerial(){
     this->psiSpace=arma::ones<arma::cx_dmat>(N1,N2);
 //    std::cout<<psiSpace<<std::endl;
 //    std::cout<<"psiSpace norm="<<arma::norm(psiSpace,2)<<std::endl;
-//    psiSpace/=arma::norm(psiSpace,2);
+    psiSpace/=arma::norm(psiSpace,2);
 
 
 //    std::cout<<psi0<<std::endl;
@@ -243,7 +247,7 @@ arma::cx_dmat os_DCE_Evolution::evolution1Step(const int&j, const arma::cx_dmat&
     U14=arma::exp(U14);
     arma::cx_dmat psiNext=psiCurr %U14;
 
-
+    std::cout<<"norm^2 of U14="<<std::pow(arma::norm(U14,2),2)<<std::endl;
     return psiNext;
 
 
@@ -426,7 +430,8 @@ arma::cx_dmat os_DCE_Evolution::oneFlush(const arma::cx_dmat& psiIn, const int& 
 
 ///evolution of wavefunctuion
 void os_DCE_Evolution::evolution(){
-    arma::cx_dmat psiStart(psi0);
+    arma::cx_dmat psiStart= psit(0);
+    std::cout<<"init norm="<<arma::norm(psiStart,2)<<std::endl;
     arma::cx_dmat psiFinal;
     std::string suffix_wv="N1"+std::to_string(N1)+"N2"+std::to_string(N2)+"L1"+std::to_string(L1)+"L2"+std::to_string(L2);
     std::string initWvName=this->outDir+"initWvFunction"+suffix_wv+".txt";
@@ -442,6 +447,7 @@ void os_DCE_Evolution::evolution(){
     }
     std::string finalWvName=this->outDir+"finalWvFunction"+suffix_wv+".txt";
     psiFinal.save(finalWvName,arma::raw_ascii);
+    std::cout<<"last norm="<<arma::norm(psiFinal,2)<<std::endl;
 
 }
 double os_DCE_Evolution::funcf(int n1){
@@ -490,6 +496,6 @@ arma::cx_dmat  os_DCE_Evolution::psit(const int &j){
                     -g0*omegac*std::sqrt(2.0*omegam)*x1SquaredTmp*x2Tmp)*std::sin(omegap*tj));
         }
     }
-
+    psiTmp/=arma::norm(psiTmp,2);
     return psiTmp;
 }
