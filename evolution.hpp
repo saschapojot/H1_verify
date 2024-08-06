@@ -212,11 +212,11 @@ public:
     double e2r=0;
 
     //params for 7
-    int N1=150;
-    int N2=800;
+    int N1;
+    int N2;
 
-    double L1=1;
-    double L2=5;
+    double L1=5;
+    double L2=80;
 
       //params for 5
 //    double L1=2;
@@ -226,16 +226,16 @@ public:
 //
 
 
-    double dx1=0;
+    double dx1;
 
-    double dx2=0;
+    double dx2;
 
-    double dtEst=0.00001;
+    double dtEst=1e-6;
     double tFlushStart=0;
     double tFlushStop=0.001;
     double tTotPerFlush=tFlushStop-tFlushStart;
 
-    int flushNum=30;
+    int flushNum=4;
 
     int stepsPerFlush=static_cast<int>(std::ceil(tTotPerFlush/dtEst));
     double dt=tTotPerFlush/static_cast<double >(stepsPerFlush);

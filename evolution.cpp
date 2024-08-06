@@ -91,7 +91,7 @@ void os_DCE_Evolution::parseCSV(const int &group, const int &row){
 
     double width1=std::sqrt(-2.0*std::log(height1)/omegac);
 
-    double minGrid1=width1/20.0;
+    double minGrid1=width1/50.0;
 
     this->N1=static_cast<int>(std::ceil(L1*2/minGrid1));
     if(N1%2==1){
@@ -102,7 +102,7 @@ void os_DCE_Evolution::parseCSV(const int &group, const int &row){
 //    }
 //for inParamsNew6, N1=6000
 //for inParamsNew7, N1=9000
-
+    this->N2=5000;
     std::cout<<"N1="<<N1<<std::endl;
     std::cout<<"N2="<<N2<<std::endl;
     dx1=2*L1/(static_cast<double>(N1));
@@ -185,7 +185,7 @@ void os_DCE_Evolution::initPsiSerial(){
 //        vec2(n2)= f2(n2);
 //    }
     this->psi0=arma::ones<arma::cx_dmat>(N1,N2);
-    this->psi0/=arma::norm(psi0,2);
+    this->psi0/=arma::norm(psi0,"fro");
 //    std::cout<<"finish init"<<std::endl;
 
 
@@ -194,9 +194,8 @@ void os_DCE_Evolution::initPsiSerial(){
 
 //    printVec(v2);
     this->psiSpace=arma::ones<arma::cx_dmat>(N1,N2);
-//    std::cout<<psiSpace<<std::endl;
-//    std::cout<<"psiSpace norm="<<arma::norm(psiSpace,2)<<std::endl;
-    psiSpace/=arma::norm(psiSpace,2);
+
+    psiSpace/=arma::norm(psiSpace,"fro");
 
 
 //    std::cout<<psi0<<std::endl;
@@ -247,7 +246,7 @@ arma::cx_dmat os_DCE_Evolution::evolution1Step(const int&j, const arma::cx_dmat&
     U14=arma::exp(U14);
     arma::cx_dmat psiNext=psiCurr %U14;
 
-    std::cout<<"norm^2 of U14="<<std::pow(arma::norm(U14,2),2)<<std::endl;
+//    std::cout<<"norm^2 of U14="<<std::pow(arma::norm(U14,"fro"),2)<<std::endl;
     return psiNext;
 
 
@@ -361,7 +360,7 @@ arma::cx_dmat os_DCE_Evolution::oneFlush(const arma::cx_dmat& psiIn, const int& 
 //    analytical_photonPerFlush.push_back(avgNc(analytical_start));
 //    analytical_phononPerFlush.push_back(avgNm(analytical_start));
 
-    diffPerFlush.push_back(arma::norm(analytical_start-psiCurr,2));
+    diffPerFlush.push_back(arma::norm(analytical_start-psiCurr,"fro"));
     for(int j=0;j<stepsPerFlush;j++){
         int indCurr=startingInd+j;
         psiNext= evolution1Step(indCurr,psiCurr);
@@ -370,7 +369,7 @@ arma::cx_dmat os_DCE_Evolution::oneFlush(const arma::cx_dmat& psiIn, const int& 
 //        phononPerFlush.push_back(avgNm(psiCurr));
 
         analytical_start= psit(indCurr+1);
-        diffPerFlush.push_back(arma::norm(analytical_start-psiCurr,2));
+        diffPerFlush.push_back(arma::norm(analytical_start-psiCurr,"fro"));
 
 //        analytical_photonPerFlush.push_back(avgNc(analytical_start));
 //        analytical_phononPerFlush.push_back(avgNm(analytical_start));
@@ -431,7 +430,7 @@ arma::cx_dmat os_DCE_Evolution::oneFlush(const arma::cx_dmat& psiIn, const int& 
 ///evolution of wavefunctuion
 void os_DCE_Evolution::evolution(){
     arma::cx_dmat psiStart= psit(0);
-    std::cout<<"init norm="<<arma::norm(psiStart,2)<<std::endl;
+    std::cout<<"init norm="<<arma::norm(psiStart,"fro")<<std::endl;
     arma::cx_dmat psiFinal;
     std::string suffix_wv="N1"+std::to_string(N1)+"N2"+std::to_string(N2)+"L1"+std::to_string(L1)+"L2"+std::to_string(L2);
     std::string initWvName=this->outDir+"initWvFunction"+suffix_wv+".txt";
@@ -447,7 +446,7 @@ void os_DCE_Evolution::evolution(){
     }
     std::string finalWvName=this->outDir+"finalWvFunction"+suffix_wv+".txt";
     psiFinal.save(finalWvName,arma::raw_ascii);
-    std::cout<<"last norm="<<arma::norm(psiFinal,2)<<std::endl;
+    std::cout<<"last norm="<<arma::norm(psiFinal,"fro")<<std::endl;
 
 }
 double os_DCE_Evolution::funcf(int n1){
@@ -496,6 +495,6 @@ arma::cx_dmat  os_DCE_Evolution::psit(const int &j){
                     -g0*omegac*std::sqrt(2.0*omegam)*x1SquaredTmp*x2Tmp)*std::sin(omegap*tj));
         }
     }
-    psiTmp/=arma::norm(psiTmp,2);
+    psiTmp/=arma::norm(psiTmp,"fro");
     return psiTmp;
 }
